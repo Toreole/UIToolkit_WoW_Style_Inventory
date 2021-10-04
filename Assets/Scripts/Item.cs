@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Item/DefaultItem")]
-public class Item : ScriptableObject
+public class Item : ScriptableObject, System.IComparable<Item>
 {
     [SerializeField]
     private Sprite sprite;
@@ -19,4 +19,11 @@ public class Item : ScriptableObject
     public string Tooltip => tooltip;
     public int StackSize => stackSize;
 
+    ///<summary>
+    ///Comparison for sorting. By default items are sorted by name.
+    ///</summary>
+    public virtual int CompareTo(Item other)
+    {
+        return this.name.CompareTo(other.name);
+    }
 }
