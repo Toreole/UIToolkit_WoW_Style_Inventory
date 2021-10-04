@@ -28,6 +28,15 @@ public class TestAddItem : MonoBehaviour
         uI.TargetBag.MoveStacks(2, 7);
         yield return new WaitForSeconds(1f);
         uI.TargetBag.MoveStacks(1, 5);
+
+        UnityEngine.UIElements.VisualElement someSlot = uI.slots[7];
+        //Remove the slot from the hierarchy. (completely disable it, but keep it in memory), should cause all other slots to get auto-sorted.
+        someSlot.RemoveFromHierarchy();
+        yield return new WaitForSeconds(2f);
+        //insert the slot back into the hierarchy?
+        uI.slots[1].parent.Add(someSlot);
+        
+        uI.slots[1].parent.Insert(7, someSlot);
     }
     
 }

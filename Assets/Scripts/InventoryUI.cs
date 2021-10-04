@@ -15,12 +15,11 @@ namespace WoW_Inventory
 
         VisualElement bagWindow;
         GroupBox slotGroup;
-        VisualElement[] slots;
+        internal VisualElement[] slots;//MAKE PRIVATE AGAIN OKAY?
         Image[] slotImages;
 
         private bool uiOpened = true; //open by default for now.
         private bool refreshOnOpen = false;
-
 
         // Start is called before the first frame update
         void Start()
@@ -46,6 +45,8 @@ namespace WoW_Inventory
                 var img = new Image();
                 slotImages[index] = img;
                 element.Add(img);
+                int slotIndex = index;
+                img.RegisterCallback<MouseDownEvent>((e) => HandleMouseDown(e, slotIndex));
                 img.StretchToParentSize();
                 index++;
             }
@@ -83,6 +84,11 @@ namespace WoW_Inventory
         private void InitInventoryBag()
         {
             targetBag = new InventoryBag(testInventorySize);
+        }
+
+        private void HandleMouseDown(MouseDownEvent e, int slotIndex)
+        {
+            Debug.Log($"Mouse down: {e.button}, slotIndex={slotIndex}");
         }
     }
 }

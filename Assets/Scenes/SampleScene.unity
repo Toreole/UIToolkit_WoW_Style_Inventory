@@ -219,6 +219,7 @@ GameObject:
   - component: {fileID: 1505923757}
   - component: {fileID: 1505923759}
   - component: {fileID: 1505923760}
+  - component: {fileID: 1505923761}
   m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
@@ -287,3 +288,16 @@ MonoBehaviour:
   itemToAdd: {fileID: 11400000, guid: 3ab23f766c5921e4a805d814b35e1954, type: 2}
   secondItemToAdd: {fileID: 11400000, guid: f9d0bfb29659676478504b5ce2727b46, type: 2}
   amountToAdd: 4
+--- !u!114 &1505923761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1505923756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68997435a756c204bb152fd070752841, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  templateToAdd: {fileID: 9197481963319205126, guid: edd83265883f64a46809d004c9470df3, type: 3}
