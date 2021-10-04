@@ -23,11 +23,21 @@ namespace WoW_Inventory
         }
 
         ///<summary>
+        ///Returns the ItemStack at the given index.
+        ///</summary>
+        internal ItemStack GetItemStackAtIndex(int index)
+        {
+            return stacks[index];
+        }
+
+        ///<summary>
         ///Tries adding the full stack at once. Requires an empty slot.
         ///O(n)
         ///</summary>
         public bool TryAddFull(ItemStack stack)
         {
+            if(stack.Count == 0)
+                return true;
             for(int i = 0; i < size; i++)
             {
                 if(stacks[i] is null)
@@ -48,6 +58,8 @@ namespace WoW_Inventory
         ///</summary>
         public bool TryAddAllFitting(ItemStack stack)
         {
+            if(stack.Count == 0)
+                return true;
             var item = stack.Item;
             var existingStacks = QueryStacks(item);
             if(existingStacks.Count > 0)
@@ -148,12 +160,14 @@ namespace WoW_Inventory
                 var stack = stacks[i];
                 if(stack.Item == item)
                 {
+                    //maximum amount of items to remove from the stack.
                     int remove = Mathf.Min(stack.Count, amount);
                     stack.Count -= remove;
                     if(stack.Count == 0)
                         stacks[i] = null; //remove itemStack at this index.
                     //mark changed index.
                     changedIndices.Add(i);
+                    //reduce the remaining amount of items to remove.
                     amount -= remove;
                     if(amount == 0)
                     {
@@ -172,7 +186,7 @@ namespace WoW_Inventory
         ///Sets the stack stored at the given index.
         ///Use with care. O(1)
         ///</summary>
-        public void SetStackAtIndex(ItemStack stack, int index)
+        internal void SetItemStackAtIndex(ItemStack stack, int index)
         {
             if(index >= size || index < 0)
                 	throw new System.IndexOutOfRangeException($"SetStackAtIndex: bad index. index={index} | size={size}");
@@ -180,12 +194,13 @@ namespace WoW_Inventory
             OnBagChanged(new(index));
         }
 
-        public void RemoveStackAtIndex(int index) => SetStackAtIndex(null, index);
+        public void RemoveStackAtIndex(int index) => SetItemStackAtIndex(null, index);
 
         public event System.Action<OnBagChangedEvent> OnBagChanged;
+        //Just a helper to easily fire the OnBagChanged event and clear the CountArray of changed indices
         private void FireBagChangedAndClearChanged()
         {
-            OnBagChanged(new(changedIndices.ToTinyArray())); //funny new
+            OnBagChanged?.Invoke(new(changedIndices.ToTinyArray())); //funny new
             changedIndices.Clear();
         }
         
