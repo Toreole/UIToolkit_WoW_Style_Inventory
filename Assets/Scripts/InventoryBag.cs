@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace WoW_Inventory
 {
-    public class InventoryBag
+    public class InventoryBag : IInventory
     {
         private ItemStack[] stacks;
         private int size;
@@ -25,7 +25,7 @@ namespace WoW_Inventory
         ///<summary>
         ///Returns the ItemStack at the given index.
         ///</summary>
-        internal ItemStack GetItemStackAtIndex(int index)
+        public ItemStack GetItemStackAtIndex(int index)
         {
             return stacks[index];
         }
@@ -186,7 +186,7 @@ namespace WoW_Inventory
         ///Sets the stack stored at the given index.
         ///Use with care. O(1)
         ///</summary>
-        internal void SetItemStackAtIndex(ItemStack stack, int index)
+        public void SetItemStackAtIndex(ItemStack stack, int index)
         {
             if(index >= size || index < 0)
                 	throw new System.IndexOutOfRangeException($"SetStackAtIndex: bad index. index={index} | size={size}");
