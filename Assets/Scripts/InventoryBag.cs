@@ -241,7 +241,7 @@ namespace WoW_Inventory
             else if (current is not null && stack is null)
                 storedStacks--;
             stacks[index] = stack;
-            OnBagChanged(new(index));
+            OnBagChanged(new(index, this));
         }
 
         public void RemoveStackAtIndex(int index) => SetItemStackAtIndex(null, index);
@@ -267,26 +267,41 @@ namespace WoW_Inventory
             }
         }
 
+        ///<summary>
+        ///Get a representation of what the stack at the given index contains.
+        ///ItemStackInfo is a struct, therefore making this unable to manipulate the content of the bag.
+        ///</summary>
+        public ItemStackInfo GetStackInfo(int index)
+        {
+            var stack = stacks[index];
+            if(stack is null)
+                return ItemStackInfo.Empty;
+            return new ItemStackInfo(){item = stack.Item, amount = stack.Count};
+        }
+
         public event System.Action<OnBagChangedEvent> OnBagChanged;
         //Just a helper to easily fire the OnBagChanged event and clear the CountArray of changed indices
         private void FireBagChangedAndClearChanged()
         {
-            OnBagChanged?.Invoke(new(changedIndices.ToTinyArray())); //funny new
+            OnBagChanged?.Invoke(new(changedIndices.ToTinyArray(), this)); //funny new
             changedIndices.Clear();
         }
         
     }
     public readonly struct OnBagChangedEvent
     {
+        public readonly InventoryBag bag;
         public readonly int[] indices {get;}
 
-        public OnBagChangedEvent(int[] indices)
+        public OnBagChangedEvent(int[] indices, InventoryBag b)
         {
             this.indices = indices;
+            bag = b;
         }
-        public OnBagChangedEvent(int index)
+        public OnBagChangedEvent(int index, InventoryBag b)
         {
             indices = new int[]{index};
+            bag = b;
         }
     }
 }

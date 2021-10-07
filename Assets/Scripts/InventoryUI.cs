@@ -5,25 +5,24 @@ using UnityEngine.UIElements;
 
 namespace WoW_Inventory
 {
+    ///<summary>
+    ///UI Element for easy handling of inventory stuff. Specifically for InventoryBags
+    ///</summary>
     public class InventoryUI : VisualElement
     {
-        InventoryBag targetBag;
         public int testInventorySize = 12;
 
-        internal InventoryBag TargetBag => targetBag; //DEBUG ONLY
-
-        VisualElement bagWindow;
         GroupBox slotGroup;
-        internal VisualElement[] slots;//MAKE PRIVATE AGAIN OKAY?
+        VisualElement[] slots;
         Image[] slotImages;
 
         private bool uiOpened = true; //open by default for now.
         private bool refreshOnOpen = false;
 
-        void InitializeSlots()
+        internal void Initialize(InventoryBag bag)
         {
-            bagWindow = this;
-            slotGroup = bagWindow.Q<GroupBox>("InventoryBag");
+            bag.OnBagChanged += OnInventoryBagChange;
+            slotGroup = this.Q<GroupBox>("InventoryBag");
             
             slots = new VisualElement[slotGroup.childCount];
             slotImages = new Image[slotGroup.childCount];
@@ -55,8 +54,8 @@ namespace WoW_Inventory
             }
             foreach(int index in e.indices)//using a foreach is so simple i cant help it
             {
-                ItemStack stack = targetBag.GetItemStackAtIndex(index);
-                if(stack is null)
+                ItemStackInfo stack = e.bag.GetStackInfo(index);
+                if(stack == ItemStackInfo.Empty)
                 {
                     //Stack has been removed from the inventory.
                     //Clear all information on the slot UI.
@@ -64,17 +63,9 @@ namespace WoW_Inventory
                 }
                 else
                 {
-                    slotImages[index].sprite = stack.Item.Sprite; //assign the new sprite.
+                    slotImages[index].sprite = stack.item.Sprite; //assign the new sprite.
                 }
             }
-        }
-
-        ///<summary>
-        ///Creates an inventory bag. Pretty much for testing purposes only.
-        ///</summary>
-        private void InitInventoryBag()
-        {
-            targetBag = new InventoryBag(testInventorySize);
         }
 
         private void HandleMouseDown(MouseDownEvent e, int slotIndex)
