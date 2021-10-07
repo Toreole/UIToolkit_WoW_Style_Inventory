@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace WoW_Inventory
 {
+    ///<summary>
+    ///An Item Stack in an inventory. Just a reference to an item and an amount.
+    ///!!As class, it's always a reference!!! So be careful.
+    ///</summary>
     public class ItemStack
     {
         public Item Item {get; internal set;} = null;

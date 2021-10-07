@@ -12,6 +12,7 @@ namespace WoW_Inventory
 
         public int Size => size;
         private CountArray<int> changedIndices;
+        private int storedStacks = 0;
 
         public InventoryBag() : this(1) {}
         public InventoryBag(int size)
@@ -46,6 +47,7 @@ namespace WoW_Inventory
                     //mark the index as changed.
                     changedIndices.Add(i);
                     FireBagChangedAndClearChanged();
+                    storedStacks++;
                     return true;
                 }
             }
@@ -101,6 +103,13 @@ namespace WoW_Inventory
                     outArray.Add(stacks[i]);
             return outArray;
         }
+
+        internal void QueryStacks(Item item, CountArray<ItemStack> arr)
+        {
+            for(int i = 0; i < size; i++)
+                if(stacks[i] is not null && stacks[i].Item == item)
+                    arr.Add(stacks[i]);
+        }
         
         ///<summary>
         ///Move two stacks to change places.
@@ -130,6 +139,7 @@ namespace WoW_Inventory
                 {
                     changedIndices.Add(i);
                     stacks[i] = null;
+                    storedStacks--;
                 }
             if(changedIndices.Count > 0) //make sure the event is only firing when actually needed.
                 FireBagChangedAndClearChanged();
@@ -144,7 +154,7 @@ namespace WoW_Inventory
         {
             int count = 0;
             for(int i = 0; i < size; i++)
-                if(stacks[i].Item == item)
+                if(stacks[i] is not null && stacks[i].Item == item)
                     count += stacks[i].Count;
             return count >= total;
         }
@@ -164,7 +174,42 @@ namespace WoW_Inventory
                     int remove = Mathf.Min(stack.Count, amount);
                     stack.Count -= remove;
                     if(stack.Count == 0)
+                    {
                         stacks[i] = null; //remove itemStack at this index.
+                        storedStacks--;
+                    }
+                    //mark changed index.
+                    changedIndices.Add(i);
+                    //reduce the remaining amount of items to remove.
+                    amount -= remove;
+                    if(amount == 0)
+                    {
+                        FireBagChangedAndClearChanged();
+                        return;
+                    }
+                }
+            }
+            //fire the event even if not all items could be removed.
+            FireBagChangedAndClearChanged();
+            if(amount > 0)
+                Debug.LogWarning("RemoveItemAmount paramater 'amount' greater than the avialable item count!");
+        }
+        ///just a duplicate but using ref.
+        public void RemoveItemAmount(Item item, ref int amount)
+        {
+            for(int i = 0; i < size; i++)
+            {
+                var stack = stacks[i];
+                if(stack.Item == item)
+                {
+                    //maximum amount of items to remove from the stack.
+                    int remove = Mathf.Min(stack.Count, amount);
+                    stack.Count -= remove;
+                    if(stack.Count == 0)
+                    {
+                        stacks[i] = null; //remove itemStack at this index.
+                        storedStacks--;
+                    }
                     //mark changed index.
                     changedIndices.Add(i);
                     //reduce the remaining amount of items to remove.
@@ -190,11 +235,37 @@ namespace WoW_Inventory
         {
             if(index >= size || index < 0)
                 	throw new System.IndexOutOfRangeException($"SetStackAtIndex: bad index. index={index} | size={size}");
+            var current = stacks[index];
+            if(current is null && stack is not null)
+                storedStacks++;
+            else if (current is not null && stack is null)
+                storedStacks--;
             stacks[index] = stack;
             OnBagChanged(new(index));
         }
 
         public void RemoveStackAtIndex(int index) => SetItemStackAtIndex(null, index);
+
+        ///<summary>
+        ///Safely resizes the InventoryBag.
+        ///O(n)
+        ///</summary>
+        internal void Resize(int newSize)
+        {
+            if(newSize < storedStacks)
+                throw(new System.Exception($"New Size too small. Currently stored={storedStacks}, newSize={newSize}"));
+            ItemStack[] arr = new ItemStack[newSize];
+            changedIndices = new CountArray<int>(newSize);
+            int index = 0; 
+            //copy over the items from the old array in a safe way.
+            for(int i = 0; i < size; i++)
+            {
+                if(stacks[i] is null)
+                    continue;
+                arr[index] = stacks[i];
+                index++;
+            }
+        }
 
         public event System.Action<OnBagChangedEvent> OnBagChanged;
         //Just a helper to easily fire the OnBagChanged event and clear the CountArray of changed indices
