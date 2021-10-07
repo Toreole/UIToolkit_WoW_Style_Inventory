@@ -5,9 +5,8 @@ using UnityEngine.UIElements;
 
 namespace WoW_Inventory
 {
-    public class InventoryUI : MonoBehaviour
+    public class InventoryUI : VisualElement
     {
-        public UIDocument doc;
         InventoryBag targetBag;
         public int testInventorySize = 12;
 
@@ -21,17 +20,9 @@ namespace WoW_Inventory
         private bool uiOpened = true; //open by default for now.
         private bool refreshOnOpen = false;
 
-        // Start is called before the first frame update
-        void Start()
-        {
-            InitInventoryBag(); //Testing more or less.
-            targetBag.OnBagChanged += OnInventoryBagChange;
-            InitializeSlots();
-        }
-
         void InitializeSlots()
         {
-            bagWindow = doc.rootVisualElement.Q("InventoryBagWindow");
+            bagWindow = this;
             slotGroup = bagWindow.Q<GroupBox>("InventoryBag");
             
             slots = new VisualElement[slotGroup.childCount];
@@ -90,5 +81,7 @@ namespace WoW_Inventory
         {
             Debug.Log($"Mouse down: {e.button}, slotIndex={slotIndex}");
         }
+
+        public new class UxmlFactory : UxmlFactory<InventoryUI> {}
     }
 }
