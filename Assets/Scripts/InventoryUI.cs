@@ -38,6 +38,8 @@ namespace WoW_Inventory
                 int slotIndex = index;
                 img.RegisterCallback<MouseDownEvent>((e) => HandleMouseDown(e, slotIndex));
                 img.StretchToParentSize();
+                //hastily get the sprite lol
+                img.sprite = bag.GetStackInfo(index).item?.Sprite;
                 index++;
             }
         }   

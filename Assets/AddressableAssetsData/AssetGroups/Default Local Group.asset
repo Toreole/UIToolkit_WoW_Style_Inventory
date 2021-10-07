@@ -16,7 +16,11 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 254d0c5d97b899c4a8ebebbc55db6734
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: edd83265883f64a46809d004c9470df3
+    m_Address: Assets/UI_XML/xml_window_InventoryBagWindow.uxml
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 7b1d4ef617d62fb4cbcdd9c13b786b16, type: 2}
   m_SchemaSet:

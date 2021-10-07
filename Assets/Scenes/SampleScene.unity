@@ -218,8 +218,6 @@ GameObject:
   - component: {fileID: 1505923758}
   - component: {fileID: 1505923757}
   - component: {fileID: 1505923759}
-  - component: {fileID: 1505923760}
-  - component: {fileID: 1505923761}
   m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
@@ -267,37 +265,53 @@ MonoBehaviour:
   m_GameObject: {fileID: 1505923756}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08fcdbd47b88f214680cbd150566317f, type: 3}
+  m_Script: {fileID: 11500000, guid: f307604052fe9ba4dbb920434dd25d0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  doc: {fileID: 1505923757}
-  testInventorySize: 12
---- !u!114 &1505923760
+  uIDocument: {fileID: 0}
+--- !u!1 &1812212917
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1812212918}
+  - component: {fileID: 1812212919}
+  m_Layer: 0
+  m_Name: PlayerDummy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1812212918
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1812212917}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.21648619, y: 0.06687138, z: 0.021573987}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1812212919
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1505923756}
+  m_GameObject: {fileID: 1812212917}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d64a805efc2028648918c578eb8fd123, type: 3}
+  m_Script: {fileID: 11500000, guid: 1af1845daa42aa14d9b8e9c6c68f5c03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uI: {fileID: 1505923759}
-  itemToAdd: {fileID: 11400000, guid: 3ab23f766c5921e4a805d814b35e1954, type: 2}
-  secondItemToAdd: {fileID: 11400000, guid: f9d0bfb29659676478504b5ce2727b46, type: 2}
-  amountToAdd: 4
---- !u!114 &1505923761
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1505923756}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68997435a756c204bb152fd070752841, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  templateToAdd: {fileID: 9197481963319205126, guid: edd83265883f64a46809d004c9470df3, type: 3}
+  itemA: {fileID: 11400000, guid: 3ab23f766c5921e4a805d814b35e1954, type: 2}
+  itemB: {fileID: 11400000, guid: f9d0bfb29659676478504b5ce2727b46, type: 2}

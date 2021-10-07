@@ -12,9 +12,20 @@ namespace WoW_Inventory
     public class PlayerInventory : IInventory
     {
         InventoryBag[] bags = new InventoryBag[5];   //up to 5 bags.
-        InventoryUI[] bagWindows = new InventoryUI[5];
+        InventoryUI[] bagWindows;
 
         public int TotalSize {get; private set;}
+
+        public PlayerInventory()
+        {
+            
+        }
+
+        public PlayerInventory(InventoryBag[] bags)
+        {
+            this.bags = bags;
+            RecalculateSize();
+        }
 
         public void RecalculateSize()
         {
@@ -144,12 +155,30 @@ namespace WoW_Inventory
             throw new System.IndexOutOfRangeException($"Index not inside inventory bounds. index={index}, size={TotalSize}");
         }
     
+        public void OpenAllBags()
+        {
+            for(int i = 0; i < bags.Length; i++)
+            {
+                if(bags[i] is not null)
+                    UIManager.InventoryGroup.Add(bagWindows[i]);
+            }
+        }
+
+        public void CloseAllBags()
+        {
+            for(int i = 0; i < bags.Length; i++)
+            {
+                if(bags[i] is not null)
+                    bagWindows[i].RemoveFromHierarchy();
+            }
+        }
+
         ///<summary>
         ///Create the UI windows for the bags.
         ///</summary>
         public void InitGUI()
         {
-            //Calling an async mathod thats not run async :)
+            //Calling an async method thats not run async :)
             VisualTreeAsset tree = Addressables.LoadAssetAsync<VisualTreeAsset>("Assets/UI_XML/xml_window_InventoryBagWindow.uxml").WaitForCompletion();
             bagWindows = new InventoryUI[bags.Length];
             for(int i = 0; i < bags.Length; i++)

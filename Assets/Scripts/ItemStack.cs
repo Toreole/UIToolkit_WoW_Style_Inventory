@@ -13,5 +13,16 @@ namespace WoW_Inventory
         public Item Item {get; internal set;} = null;
         public int Count {get; internal set;} = 0;
 
+        public ItemStack(){}
+        public ItemStack(Item item) : this(item, 1)
+        {
+        }
+
+        public ItemStack(Item item, int amount)
+        {
+            Item = item;
+            Count = amount;
+        }
+
     }
 }
