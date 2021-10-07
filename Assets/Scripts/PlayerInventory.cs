@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
+using UnityEngine.AddressableAssets;
 
 namespace WoW_Inventory
 {
@@ -10,10 +12,11 @@ namespace WoW_Inventory
     public class PlayerInventory : IInventory
     {
         InventoryBag[] bags = new InventoryBag[5];   //up to 5 bags.
+        InventoryUI[] bagWindows = new InventoryUI[5];
 
         public int TotalSize {get; private set;}
 
-        public void RecalculateSizes()
+        public void RecalculateSize()
         {
             TotalSize = 0;
             foreach(var b in bags)
@@ -139,6 +142,24 @@ namespace WoW_Inventory
                     else 
                         index -= bags[i].Size;
             throw new System.IndexOutOfRangeException($"Index not inside inventory bounds. index={index}, size={TotalSize}");
+        }
+    
+        ///<summary>
+        ///Create the UI windows for the bags.
+        ///</summary>
+        public void InitGUI()
+        {
+            //Calling an async mathod thats not run async :)
+            VisualTreeAsset tree = Addressables.LoadAssetAsync<VisualTreeAsset>("Assets/UI_XML/xml_window_InventoryBagWindow.uxml").WaitForCompletion();
+            bagWindows = new InventoryUI[bags.Length];
+            for(int i = 0; i < bags.Length; i++)
+            {
+                var window = tree.CloneTree().Q<InventoryUI>();
+                bagWindows[i] = window;
+                if(bags[i] is not null)
+                    window.Initialize(bags[i]);
+                //UIManager.InventoryGroup.Add(window); -- this would be to have them open by default
+            }
         }
     }
 }
