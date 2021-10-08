@@ -24,9 +24,14 @@ namespace WoW_Inventory
                 uIDocument = GetComponent<UIDocument>();
         }
 
+
+        NumberInputField yep;
+
         private void Start()
         {
             var root = uIDocument.rootVisualElement;
+            yep = new NumberInputField();
+            yep.Init(root.Q<TextField>());
             InventoryGroup = root.Q("InventoryGroup");
             CursorInfo.Cursor = root.Q("Cursor");
             CursorInfo.Image = CursorInfo.Cursor.Q<Image>();

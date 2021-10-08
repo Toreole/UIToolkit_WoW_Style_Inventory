@@ -13,6 +13,8 @@ public class PlayerDummy : MonoBehaviour
     // Start is called before the first frame update
     IEnumerator Start()
     {
+        Application.targetFrameRate = 60;
+        
         yield return new WaitForSeconds(1); //wait right at the start to ensure this runs last.
         
         //60 item slots in total.
@@ -26,13 +28,6 @@ public class PlayerDummy : MonoBehaviour
 
         inventory.SetItemStackAtIndex(new ItemStack(itemB), 50); //50 should be within limits
 
-        yield return new WaitForSeconds(1);
-        inventory.MoveStacks(1, 3);
-        yield return new WaitForSeconds(1);
-        inventory.MoveStacks(2, 50);
-        yield return new WaitForSeconds(1);
-        inventory.CloseAllBags();
-        yield return new WaitForSeconds(1);
         inventory.OpenAllBags();
     }
 }
