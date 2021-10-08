@@ -17,7 +17,7 @@ namespace WoW_Inventory
         ///Tell the cursor to "hold" an item(stack).
         ///Returns true if the cursor was able to pick it up.
         ///</summary>
-        private static bool HoldItem(IInventory inventory, int index, VisualElement slot)
+        private static bool HoldItemStack(IInventory inventory, int index, VisualElement slot)
         {
             //The cursor can only start holding an item if its not doing anything else.
             if(CurrentState is not CursorState.Default)
@@ -77,6 +77,11 @@ namespace WoW_Inventory
             // - OR keep reference to original bag/index + int amountToMove?
         // - New CursorState for this probably.
 
+
+        //payload structs : IPlaceItem
+        //define data around what to move. an entire stack vs just a part of a stack, also have the VisualElement slot in there or something?????
+        //interface method IPlaceItem.PlaceItemStack(IInventory target, int index) handles everything depending on the type of movement?
+
         public static void HandleInventorySlotMouseDown(MouseDownEvent e, IInventory inventory, int slotIndex, VisualElement slot)
         {
             var stack = inventory.GetItemStackAtIndex(slotIndex);
@@ -85,7 +90,12 @@ namespace WoW_Inventory
                 case CursorState.Default:
                     if(stack is null)
                         return;
-                    HoldItem(inventory, slotIndex, slot);
+                    if(e.shiftKey)
+                    {
+                        //picking up a partial stack starts here
+                    }
+                    else //otherwise hold the entire stack.
+                        HoldItemStack(inventory, slotIndex, slot);
                     break;
                 case CursorState.HoldingItem:
                     PlaceItem(inventory, slotIndex);
