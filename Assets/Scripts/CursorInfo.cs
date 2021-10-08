@@ -45,6 +45,10 @@ namespace WoW_Inventory
             }
         }
 
+        ///<summary>
+        ///Places the held item into the index in the bag.
+        ///See: InventoryUtility.MoveStacks
+        ///</summary>
         public static void PlaceItem(InventoryBag bag, int index)
         {
             lastSlot.SetEnabled(true); //Re-enable the slot.
@@ -57,6 +61,23 @@ namespace WoW_Inventory
         private static InventoryBag lastBag;
         private static int lastItemIndex;
         private static VisualElement lastSlot;
+
+        //AmountThingy 
+        // MovePartOfItemStack vs MoveEntireStack
+        // Moving part requires the destination(target) to be a stack of the same item, OR be an empty slot.
+        // moving an entire stack is easy we did that already.
+        // 
+        // When picking up a part of a stack: 
+        // - open the amount menu thingy (number input)
+        //   - max amount = original stack.Count
+        // - Disable interaction with other uielements? other interactions cause abort of the action
+        // ->> when confirmed amount to move:
+            // - set Image.sprite to the item.Sprite
+            // - create a new ItemStack with Item and confirmed amount
+            // - OR keep reference to original bag/index + int amountToMove?
+        // - New CursorState for this probably.
+
+
     }
 
     public enum CursorState
