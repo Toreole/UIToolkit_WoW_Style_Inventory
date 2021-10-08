@@ -38,7 +38,7 @@ namespace WoW_Inventory
                 slotImages[index] = img;
                 element.Add(img);
                 int slotIndex = index;
-                img.RegisterCallback<MouseDownEvent>((e) => HandleMouseDown(e, bag, slotIndex)); //not sure how performant this is...
+                img.RegisterCallback<MouseDownEvent>((e) => CursorInfo.HandleInventorySlotMouseDown(e, bag, slotIndex, img)); //not sure how performant this is...
                 img.StretchToParentSize();
 
                 //create label:
@@ -90,14 +90,16 @@ namespace WoW_Inventory
         {
             Debug.Log($"Mouse down: {e.button}, slotIndex={slotIndex}");
 
-            if(CursorInfo.HoldItem(bag, slotIndex, slotImages[slotIndex]))
-            {
+            //CursorInfo.HandleInventoryClick
+
+            //if(CursorInfo.HoldItem(bag, slotIndex, slotImages[slotIndex]))
+            //{
                 //Success!
-            }
-            else if(CursorInfo.CurrentState is CursorState.HoldingItem)
-            {
-                CursorInfo.PlaceItem(bag, slotIndex);
-            }
+            //}
+            //else if(CursorInfo.CurrentState is CursorState.HoldingItem)
+            //{
+                //CursorInfo.PlaceItem(bag, slotIndex);
+            //}
         }
 
 

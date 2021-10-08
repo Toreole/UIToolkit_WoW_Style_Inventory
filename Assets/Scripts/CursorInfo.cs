@@ -17,7 +17,7 @@ namespace WoW_Inventory
         ///Tell the cursor to "hold" an item(stack).
         ///Returns true if the cursor was able to pick it up.
         ///</summary>
-        public static bool HoldItem(InventoryBag bag, int index, VisualElement slot)
+        private static bool HoldItem(IInventory inventory, int index, VisualElement slot)
         {
             //The cursor can only start holding an item if its not doing anything else.
             if(CurrentState is not CursorState.Default)
@@ -26,16 +26,16 @@ namespace WoW_Inventory
             }
             else
             {
-                var itemInfo = bag.GetStackInfo(index);
+                var itemInfo = inventory.GetItemStackAtIndex(index);
                 //check if its empty first.
-                if(itemInfo.IsEmpty())
+                if(itemInfo is null)
                 {
                     return false;
                 }
                 else
                 {
-                    Image.sprite = itemInfo.item.Sprite;
-                    lastBag = bag;
+                    Image.sprite = itemInfo.Item.Sprite;
+                    lastInventory = inventory;
                     lastItemIndex = index;
                     lastSlot = slot;
                     slot.SetEnabled(false); //disable the slot for now.
@@ -49,16 +49,16 @@ namespace WoW_Inventory
         ///Places the held item into the index in the bag.
         ///See: InventoryUtility.MoveStacks
         ///</summary>
-        public static void PlaceItem(InventoryBag bag, int index)
+        public static void PlaceItem(IInventory targetInventory, int index)
         {
             lastSlot.SetEnabled(true); //Re-enable the slot.
-            InventoryUtility.MoveStacks(lastBag, lastItemIndex, bag, index);
+            InventoryUtility.MoveStacks(lastInventory, lastItemIndex, targetInventory, index);
             //Reset the cursor sprite.
             Image.sprite = DefaultSprite;
             CurrentState = CursorState.Default;
         }
 
-        private static InventoryBag lastBag;
+        private static IInventory lastInventory;
         private static int lastItemIndex;
         private static VisualElement lastSlot;
 
@@ -77,6 +77,22 @@ namespace WoW_Inventory
             // - OR keep reference to original bag/index + int amountToMove?
         // - New CursorState for this probably.
 
+        public static void HandleInventorySlotMouseDown(MouseDownEvent e, IInventory inventory, int slotIndex, VisualElement slot)
+        {
+            var stack = inventory.GetItemStackAtIndex(slotIndex);
+            switch(CurrentState)
+            {
+                case CursorState.Default:
+                    if(stack is null)
+                        return;
+                    HoldItem(inventory, slotIndex, slot);
+                    break;
+                case CursorState.HoldingItem:
+                    PlaceItem(inventory, slotIndex);
+                    break;
+            }
+        }
+
 
     }
 
@@ -85,6 +101,8 @@ namespace WoW_Inventory
         Default = 0,
         Error = 666,
         HoldingItem = 1,
+        HoldingPartialStack = 2,
+        PreparingPartialStack = 3
     }
 
 }
