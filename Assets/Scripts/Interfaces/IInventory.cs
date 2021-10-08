@@ -7,6 +7,8 @@ namespace WoW_Inventory
     public interface IInventory : IDepositInterface, IWithdrawInterface //funny, maybe useful at some point.
     {
         void MoveStacks(int firstIndex, int secondIndex);
+
+        void NotifyChange(int changedIndex);
     }
 
     public interface IDepositInterface

@@ -15,6 +15,7 @@ namespace WoW_Inventory
         GroupBox slotGroup;
         VisualElement[] slots;
         Image[] slotImages;
+        Label[] slotLabels;
 
         private bool uiOpened = true; //open by default for now.
         private bool refreshOnOpen = false;
@@ -26,6 +27,7 @@ namespace WoW_Inventory
             
             slots = new VisualElement[slotGroup.childCount];
             slotImages = new Image[slotGroup.childCount];
+            slotLabels = new Label[slotGroup.childCount];
 
             //Add images to all the slots. By default these are empty (transparent)
             int index = 0;
@@ -38,8 +40,20 @@ namespace WoW_Inventory
                 int slotIndex = index;
                 img.RegisterCallback<MouseDownEvent>((e) => HandleMouseDown(e, bag, slotIndex)); //not sure how performant this is...
                 img.StretchToParentSize();
-                //hastily get the sprite lol
-                img.sprite = bag.GetStackInfo(index).item?.Sprite;
+
+                //create label:
+                var label = new Label();
+                label.AddToClassList("itemSlotLabel");
+                label.pickingMode = PickingMode.Ignore; //ignore mousevents on the label please thanks.
+                label.text = "";
+                slotLabels[index] = label;
+                img.Add(label);
+
+                //yep yep actually get the info up-to-date
+                var info = bag.GetStackInfo(index);
+                img.sprite = info.item?.Sprite;
+                label.text = info.amount > 0? info.amount.ToString() : "";
+
                 index++;
             }
         }   
@@ -62,10 +76,12 @@ namespace WoW_Inventory
                     //Stack has been removed from the inventory.
                     //Clear all information on the slot UI.
                     slotImages[index].sprite = null;
+                    slotLabels[index].text = "";
                 }
                 else
                 {
                     slotImages[index].sprite = stack.item.Sprite; //assign the new sprite.
+                    slotLabels[index].text = stack.amount.ToString(); //update amount text.
                 }
             }
         }
@@ -78,7 +94,7 @@ namespace WoW_Inventory
             {
                 //Success!
             }
-            else if(CursorInfo.CurrentState is  CursorState.HoldingItem)
+            else if(CursorInfo.CurrentState is CursorState.HoldingItem)
             {
                 CursorInfo.PlaceItem(bag, slotIndex);
             }

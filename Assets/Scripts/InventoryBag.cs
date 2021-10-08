@@ -279,6 +279,12 @@ namespace WoW_Inventory
             return new ItemStackInfo(){item = stack.Item, amount = stack.Count};
         }
 
+        public void NotifyChange(int changedIndex)
+        {
+            changedIndices.Add(changedIndex);
+            FireBagChangedAndClearChanged();
+        }
+
         public event System.Action<OnBagChangedEvent> OnBagChanged;
         //Just a helper to easily fire the OnBagChanged event and clear the CountArray of changed indices
         private void FireBagChangedAndClearChanged()

@@ -190,5 +190,7 @@ namespace WoW_Inventory
                 //UIManager.InventoryGroup.Add(window); -- this would be to have them open by default
             }
         }
+
+        public void NotifyChange(int changedIndex) => GetBagAndIndex(ref changedIndex).NotifyChange(changedIndex);
     }
 }
