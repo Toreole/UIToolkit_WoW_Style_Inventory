@@ -6,6 +6,8 @@ public class UIManager : MonoBehaviour
     private static UIManager instance;
     [SerializeField]
     private UIDocument uIDocument;
+    [SerializeField]
+    private Sprite defaultCursor;
 
     private void Awake() 
     {
@@ -24,6 +26,9 @@ public class UIManager : MonoBehaviour
         var root = uIDocument.rootVisualElement;
         InventoryGroup = root.Q("InventoryGroup");
         Cursor = root.Q("Cursor");
+        CursorImage = Cursor.Q<Image>();
+        DefaultCursor = defaultCursor;
+        CursorImage.sprite = defaultCursor;
         //Hide the "OS" Cursor
         UnityEngine.Cursor.visible = false;
     }
@@ -37,6 +42,8 @@ public class UIManager : MonoBehaviour
         Cursor.style.bottom = new StyleLength((int)pos.y);
     }
 
-    public static VisualElement InventoryGroup;
-    public static VisualElement Cursor;
+    public static VisualElement InventoryGroup {get; private set;}
+    public static VisualElement Cursor {get; private set;}
+    public static Image CursorImage {get; private set;}
+    public static Sprite DefaultCursor {get; private set;}
 }
