@@ -36,7 +36,7 @@ namespace WoW_Inventory
                 slotImages[index] = img;
                 element.Add(img);
                 int slotIndex = index;
-                img.RegisterCallback<MouseDownEvent>((e) => HandleMouseDown(e, bag, slotIndex));
+                img.RegisterCallback<MouseDownEvent>((e) => HandleMouseDown(e, bag, slotIndex)); //not sure how performant this is...
                 img.StretchToParentSize();
                 //hastily get the sprite lol
                 img.sprite = bag.GetStackInfo(index).item?.Sprite;
@@ -73,14 +73,17 @@ namespace WoW_Inventory
         private void HandleMouseDown(MouseDownEvent e, InventoryBag bag, int slotIndex)
         {
             Debug.Log($"Mouse down: {e.button}, slotIndex={slotIndex}");
-            //DEBUG TEST 1
-            var stack = bag.GetStackInfo(slotIndex);
-            if(stack != ItemStackInfo.Empty)
+
+            if(CursorInfo.HoldItem(bag, slotIndex, slotImages[slotIndex]))
             {
-                UIManager.CursorImage.sprite = stack.item.Sprite;
+                //Success!
             }
-            else UIManager.CursorImage.sprite = UIManager.DefaultCursor;
+            else if(CursorInfo.CurrentState is  CursorState.HoldingItem)
+            {
+                CursorInfo.PlaceItem(bag, slotIndex);
+            }
         }
+
 
         public new class UxmlFactory : UxmlFactory<InventoryUI> {}
     }

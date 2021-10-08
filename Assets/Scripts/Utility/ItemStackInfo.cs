@@ -21,5 +21,10 @@ namespace WoW_Inventory
         {
             return base.GetHashCode();
         }
+
+        public bool IsEmpty()
+        {
+            return amount <= 0;
+        }
     }
 }
