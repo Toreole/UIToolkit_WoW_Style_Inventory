@@ -23,7 +23,20 @@ public class UIManager : MonoBehaviour
     {
         var root = uIDocument.rootVisualElement;
         InventoryGroup = root.Q("InventoryGroup");
+        Cursor = root.Q("Cursor");
+        //Hide the "OS" Cursor
+        UnityEngine.Cursor.visible = false;
+    }
+
+    private void Update() 
+    {
+        var pos = UnityEngine.Input.mousePosition;
+        pos.x *= 1920f / Display.main.renderingWidth ;
+        pos.y *= 1080f / Display.main.renderingHeight;
+        Cursor.style.left = new StyleLength((int)pos.x);
+        Cursor.style.bottom = new StyleLength((int)pos.y);
     }
 
     public static VisualElement InventoryGroup;
+    public static VisualElement Cursor;
 }
