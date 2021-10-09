@@ -23,8 +23,8 @@ public class PlayerDummy : MonoBehaviour
         inventory.InitGUI();
         inventory.OpenAllBags();
 
-        inventory.TryAddFull(new ItemStack(itemA));
-        inventory.TryAddFull(new ItemStack(itemB));
+        inventory.TryAddFull(new ItemStack(itemA, 10));
+        inventory.TryAddFull(new ItemStack(itemB, 5));
 
         inventory.SetItemStackAtIndex(new ItemStack(itemB), 50); //50 should be within limits
 

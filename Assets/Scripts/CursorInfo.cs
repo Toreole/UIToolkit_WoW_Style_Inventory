@@ -55,6 +55,13 @@ namespace WoW_Inventory
 
         public static void HoldPartialStackAmount(IInventory inventory, int index, int amount)
         {
+            if(amount == 0)
+            {
+                CurrentState = CursorState.Default;
+                Image.sprite = DefaultSprite;
+                lastSlot.SetEnabled(true);
+                return;
+            }
             var stack = inventory.GetItemStackAtIndex(index);
             Image.sprite = stack.Item.Sprite;
 
