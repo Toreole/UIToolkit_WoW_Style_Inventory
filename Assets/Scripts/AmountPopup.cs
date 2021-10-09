@@ -14,6 +14,8 @@ namespace WoW_Inventory
 
         public int MaxValue {get => inputField.MaxValue; set => inputField.MaxValue = value;}
 
+        public bool IsOpen {get; private set;}
+
         public AmountPopup(VisualElement root)
         {
             window = root;
@@ -40,18 +42,27 @@ namespace WoW_Inventory
             invSlot = slotIndex;
             inputField.MaxValue = inventory.GetItemStackAtIndex(slotIndex).Count;
             inputField.Reset();
+            IsOpen = true;
         }
 
         public void Hide()
         {
             window.style.left = new StyleLength(10000);
             window.style.bottom = new StyleLength(10000);
+            IsOpen = false;
+        }
+
+        public void HideAndCancel()
+        {
+            CursorInfo.HoldPartialStackAmount(null, 0, 0);
+            Hide();
         }
 
         //this is the only way general kenobi
         IInventory inv;
         int invSlot;
 
+        //IDEA: Send ConfirmAmountValue when the textfield is being edited and the enter key is pressed.
         private void ConfirmAmountValue()
         {
             int amount = 0;

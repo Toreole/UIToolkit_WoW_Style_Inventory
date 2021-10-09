@@ -48,6 +48,14 @@ namespace WoW_Inventory
             pos.y *= 1080f / Display.main.renderingHeight;
             CursorInfo.Cursor.style.left = new StyleLength((int)pos.x);
             CursorInfo.Cursor.style.bottom = new StyleLength((int)pos.y);
+
+            if(Input.GetKeyDown(KeyCode.Escape))
+            {
+                if(AmountPopup.IsOpen)
+                {
+                    AmountPopup.HideAndCancel();
+                }
+            }
         }
     }
 }
