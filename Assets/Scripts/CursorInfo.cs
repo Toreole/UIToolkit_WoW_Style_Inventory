@@ -35,8 +35,7 @@ namespace WoW_Inventory
                 else
                 {
                     Image.sprite = itemInfo.Item.Sprite;
-                    lastInventory = inventory;
-                    lastItemIndex = index;
+                    itemCarry = new FullItemStackPayload(inventory, index);
                     lastSlot = slot;
                     slot.SetEnabled(false); //disable the slot for now.
                     CurrentState = CursorState.HoldingItem;
@@ -45,21 +44,40 @@ namespace WoW_Inventory
             }
         }
 
+        public static void HoldItemStack(IInventory inventory, int index)
+        {
+            var stack = inventory.GetItemStackAtIndex(index);
+            Image.sprite = stack.Item.Sprite;
+
+            itemCarry = new FullItemStackPayload(inventory, index);
+            CurrentState = CursorState.HoldingItem;
+        }
+
+        public static void HoldPartialStackAmount(IInventory inventory, int index, int amount)
+        {
+            var stack = inventory.GetItemStackAtIndex(index);
+            Image.sprite = stack.Item.Sprite;
+
+            itemCarry = new PartialItemStackPayload(inventory, index, amount);
+            CurrentState = CursorState.HoldingItem;
+        }
+
         ///<summary>
         ///Places the held item into the index in the bag.
         ///See: InventoryUtility.MoveStacks
         ///</summary>
-        public static void PlaceItem(IInventory targetInventory, int index)
-        {
-            lastSlot.SetEnabled(true); //Re-enable the slot.
-            InventoryUtility.MoveStacks(lastInventory, lastItemIndex, targetInventory, index);
-            //Reset the cursor sprite.
-            Image.sprite = DefaultSprite;
-            CurrentState = CursorState.Default;
+        public static void PlaceItem(IInventory targetInventory, int index) 
+        {               //IDEA: rework to IItemReceiver instead of IInventory/index. Item receiver has slot data and everything.
+            if(itemCarry.TryDeliver(targetInventory, targetSlot: index))
+            {
+                lastSlot.SetEnabled(true); //Re-enable the slot.
+                //Reset the cursor sprite.
+                Image.sprite = DefaultSprite;
+                CurrentState = CursorState.Default;
+            }
         }
 
-        private static IInventory lastInventory;
-        private static int lastItemIndex;
+        private static IItemPayload itemCarry;
         private static VisualElement lastSlot;
 
         //AmountThingy 
@@ -75,30 +93,38 @@ namespace WoW_Inventory
             // - set Image.sprite to the item.Sprite
             // - create a new ItemStack with Item and confirmed amount
             // - OR keep reference to original bag/index + int amountToMove?
-        // - New CursorState for this probably.
+        // - If confirmed amount == itemstack.Count => FullStackMove.
 
-
-        //payload structs : IPlaceItem
-        //define data around what to move. an entire stack vs just a part of a stack, also have the VisualElement slot in there or something?????
-        //interface method IPlaceItem.PlaceItemStack(IInventory target, int index) handles everything depending on the type of movement?
-
+        ///<summary>
+        ///Handles all inventory clicks pretty much.
+        ///</summary>
         public static void HandleInventorySlotMouseDown(MouseDownEvent e, IInventory inventory, int slotIndex, VisualElement slot)
         {
             var stack = inventory.GetItemStackAtIndex(slotIndex);
             switch(CurrentState)
             {
                 case CursorState.Default:
-                    if(stack is null)
+                    if(stack is null) //no item, nothing to do :cool:
                         return;
-                    if(e.shiftKey)
+                    if(e.shiftKey && stack.Count > 1)
                     {
                         //picking up a partial stack starts here
+                        CurrentState = CursorState.PreparingPartialStack;
+                        //pre-disable slot and remember it
+                        slot.SetEnabled(false);
+                        lastSlot = slot;
+                        //Enable the stack amount thingy for the slot.
+                        UIManager.AmountPopup.Show(inventory, slotIndex);
                     }
                     else //otherwise hold the entire stack.
                         HoldItemStack(inventory, slotIndex, slot);
                     break;
                 case CursorState.HoldingItem:
                     PlaceItem(inventory, slotIndex);
+                    break;
+                case CursorState.PreparingPartialStack: 
+                    //abort preparing partial stack yay. 
+                    //also happens when pressing esc. so this probably has to be a public method or something idk.
                     break;
             }
         }
@@ -111,8 +137,6 @@ namespace WoW_Inventory
         Default = 0,
         Error = 666,
         HoldingItem = 1,
-        HoldingPartialStack = 2,
-        PreparingPartialStack = 3
+        PreparingPartialStack = 2
     }
-
 }

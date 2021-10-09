@@ -11,6 +11,10 @@ namespace WoW_Inventory
         private UIDocument uIDocument;
         [SerializeField]
         private Sprite defaultCursor;
+        private AmountPopup amountInput;
+
+        public static AmountPopup AmountPopup => instance.amountInput;
+        public static VisualElement InventoryGroup {get; private set;}
 
         private void Awake() 
         {
@@ -24,14 +28,10 @@ namespace WoW_Inventory
                 uIDocument = GetComponent<UIDocument>();
         }
 
-
-        NumberInputField yep;
-
         private void Start()
         {
             var root = uIDocument.rootVisualElement;
-            yep = new NumberInputField();
-            yep.Init(root.Q<TextField>());
+            amountInput = new(root.Q("AmountInput"));
             InventoryGroup = root.Q("InventoryGroup");
             CursorInfo.Cursor = root.Q("Cursor");
             CursorInfo.Image = CursorInfo.Cursor.Q<Image>();
@@ -49,7 +49,5 @@ namespace WoW_Inventory
             CursorInfo.Cursor.style.left = new StyleLength((int)pos.x);
             CursorInfo.Cursor.style.bottom = new StyleLength((int)pos.y);
         }
-
-        public static VisualElement InventoryGroup {get; private set;}
     }
 }

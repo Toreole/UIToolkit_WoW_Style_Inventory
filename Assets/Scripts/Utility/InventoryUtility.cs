@@ -42,6 +42,13 @@ namespace WoW_Inventory
             }
         }
 
+        internal static void MoveStacks(IWithdrawInventory origin, int oIndex, IInventory destination, int dIndex)
+        {
+            if(destination.GetItemStackAtIndex(dIndex) is not null)
+                return;
+            destination.SetItemStackAtIndex(origin.GetItemStackAtIndex(oIndex), dIndex);
+        }
+
         ///<summary>
         ///Naively swap two stacks in different/equal inventories.
         ///</summary>

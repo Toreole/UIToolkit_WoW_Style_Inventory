@@ -4,20 +4,20 @@ using UnityEngine;
 
 namespace WoW_Inventory
 {
-    public interface IInventory : IDepositInterface, IWithdrawInterface //funny, maybe useful at some point.
+    public interface IInventory : IDepositInventory, IWithdrawInventory //funny, maybe useful at some point.
     {
         void MoveStacks(int firstIndex, int secondIndex);
 
         void NotifyChange(int changedIndex);
     }
 
-    public interface IDepositInterface
+    public interface IDepositInventory
     {
         bool TryAddAllFitting(ItemStack stack);
         void SetItemStackAtIndex(ItemStack stack, int index);
     }
 
-    public interface IWithdrawInterface
+    public interface IWithdrawInventory
     {
         bool HasItemAmount(Item item, int amount);
         void RemoveItemAmount(Item item, int amount);
